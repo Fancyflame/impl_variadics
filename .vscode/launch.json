@@ -1,0 +1,45 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'test'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=test",
+                    "--package=impl_variadic"
+                ],
+                "filter": {
+                    "name": "test",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'test'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=test",
+                    "--package=impl_variadic"
+                ],
+                "filter": {
+                    "name": "test",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
