@@ -17,7 +17,7 @@ mod custom_ident;
 mod format;
 
 #[proc_macro]
-pub fn variadic(tokens: TokenStream) -> TokenStream {
+pub fn impl_variadics(tokens: TokenStream) -> TokenStream {
     let parser =
         |input: ParseStream| Punctuated::<_, Token![;]>::parse_terminated_with(input, impl_one);
 

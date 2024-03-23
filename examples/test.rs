@@ -1,9 +1,9 @@
-use impl_variadics::variadic;
+use impl_variadics::impl_variadics;
 use std::fmt::{Display, Formatter, Result};
 
 struct TupleDisplay<T>(T);
 
-variadic! {
+impl_variadics! {
     ..4 "T*" => {
         impl<#(#T0),*> Display for TupleDisplay<(#(#T0,)*)>
         where
