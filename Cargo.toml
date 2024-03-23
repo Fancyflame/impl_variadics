@@ -2,6 +2,8 @@
 name = "impl_variadics"
 version = "0.1.0"
 edition = "2021"
+description = "a macro to generate repetitive idents etc. usually used to implement trait for tuples."
+license = "MIT"
 
 [lib]
 proc-macro = true
