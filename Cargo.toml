@@ -1,9 +1,13 @@
 [package]
 name = "impl_variadics"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "a macro to generate repetitive idents etc. usually used to implement trait for tuples."
-license = "MIT"
+license-file = "LICENSE"
+authors = ["fancyflame"]
+repository = "https://github.com/Fancyflame/impl_variadics"
+keywords = ["variadics", "tuple", "macro", "macros", "generics"]
+categories = ["development-tools"]
 
 [lib]
 proc-macro = true

@@ -7,7 +7,7 @@ The syntax is similar to `quote`.
 ## Example
 
 ```rust
-variadic! {
+impl_variadics! {
     ..4 "T*" => {
         impl<#(#T0),*> Display for TupleDisplay<(#(#T0,)*)>
         where
