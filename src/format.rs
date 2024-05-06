@@ -1,9 +1,9 @@
 use proc_macro2::{Group, Literal, Punct, TokenStream, TokenTree};
 use quote::ToTokens;
 use syn::{
-    bracketed, parenthesized,
+    parenthesized,
     parse::{ParseStream, Parser},
-    token::{Bracket, Paren},
+    token::Paren,
     Error, Ident, Index, Result, Token,
 };
 
@@ -59,13 +59,12 @@ pub fn handle_formatted(input: ParseStream, arg_info: ArgInfo) -> Result<TokenSt
         }
 
         let pound = input.parse::<Token![#]>()?;
-        let repeat_mode = input.peek(Bracket);
 
         if input.peek(Ident) {
             let id = input.parse::<Ident>()?;
             arg_info.get(&mut tokens, id)?;
-        } else if input.peek(Paren) || repeat_mode {
-            handle_repeater(input, &mut tokens, arg_info, repeat_mode)?;
+        } else if input.peek(Paren) {
+            handle_repeater(input, &mut tokens, arg_info)?;
         } else {
             pound.to_tokens(&mut tokens);
         }
@@ -73,19 +72,10 @@ pub fn handle_formatted(input: ParseStream, arg_info: ArgInfo) -> Result<TokenSt
     Ok(tokens)
 }
 
-fn handle_repeater(
-    input: ParseStream,
-    tokens: &mut TokenStream,
-    arg_info: ArgInfo,
-    repeat_mode: bool,
-) -> Result<()> {
+fn handle_repeater(input: ParseStream, tokens: &mut TokenStream, arg_info: ArgInfo) -> Result<()> {
     let content;
 
-    if repeat_mode {
-        bracketed!(content in input);
-    } else {
-        parenthesized!(content in input);
-    }
+    parenthesized!(content in input);
 
     let separator = if input.peek(Token![*]) {
         None
@@ -106,7 +96,7 @@ fn handle_repeater(
         handle_formatted(
             &content.fork(),
             ArgInfo {
-                len: if repeat_mode { arg_info.len } else { nth },
+                len: nth,
                 cidm: arg_info.cidm,
             },
         )?
