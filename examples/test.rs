@@ -5,7 +5,7 @@ struct TupleDisplay<T>(T);
 
 impl_variadics! {
     ..4 "T*" => {
-        impl<#(#T0),*> Display for TupleDisplay<(#(#T0,)*)>
+        impl<#(#T0,)*> Display for TupleDisplay<(#(#T0,)*)>
         where
             #(#T0: Display,)*
         {

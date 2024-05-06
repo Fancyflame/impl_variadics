@@ -8,10 +8,13 @@ use syn::{
     buffer::Cursor,
     parse::{ParseBuffer, ParseStream, Parser},
     punctuated::Punctuated,
-    Index, LitStr, RangeLimits, Result, Token,
+    Index, LitInt, LitStr, RangeLimits, Result, Token,
 };
 
-use crate::{custom_ident::CustomIdMap, format::handle_formatted};
+use crate::{
+    custom_ident::CustomIdMap,
+    format::{handle_formatted, ArgInfo},
+};
 
 mod custom_ident;
 mod format;
@@ -33,19 +36,21 @@ pub fn impl_variadics(tokens: TokenStream) -> TokenStream {
 }
 
 fn impl_one(input: ParseStream) -> Result<TokenStream2> {
-    let start = if input.peek(Token![..]) || input.peek(Token![..=]) {
-        0
-    } else {
+    let start = if input.peek(LitInt) {
         input.parse::<Index>()?.index
+    } else {
+        0
     };
 
-    let end = {
+    let end = if input.peek(Token![..]) || input.peek(Token![..=]) {
         let range_limits = input.parse::<RangeLimits>()?;
         let end = input.parse::<Index>()?.index;
         match range_limits {
             RangeLimits::Closed(_) => end + 1,
             RangeLimits::HalfOpen(_) => end,
         }
+    } else {
+        start + 1
     };
 
     let mut custom_ids = CustomIdMap::new();
@@ -59,7 +64,14 @@ fn impl_one(input: ParseStream) -> Result<TokenStream2> {
 
     let mut output = TokenStream2::new();
     for len in start..end {
-        handle_formatted(&content.fork(), len, &custom_ids)?.to_tokens(&mut output);
+        handle_formatted(
+            &content.fork(),
+            ArgInfo {
+                len,
+                cidm: &custom_ids,
+            },
+        )?
+        .to_tokens(&mut output);
     }
     discard_parse_buffer(content);
 
